@@ -1,8 +1,6 @@
 package main
 
-import (
-	"trumpeter/cmd"
-)
+import "trumpeter/cmd"
 
 //var host string
 //var port int
@@ -33,4 +31,5 @@ func main() {
 	//db.InitRedis(host, port)
 	//db.Pop()
 
+	//web.Run()
 }

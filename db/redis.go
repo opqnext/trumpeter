@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"trumpeter/web"
 )
 
 var rdb *redis.Client
@@ -35,7 +36,9 @@ func Pop() {
 			fmt.Println("value is empty")
 		}
 
-		Save(val[1])
+		web.Push()
+
+		//Save(val[1])
 	}
 }
 

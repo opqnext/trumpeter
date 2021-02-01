@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"trumpeter/httpd"
 	"trumpeter/web"
 )
 
@@ -18,12 +17,9 @@ func init() {
 
 var webCmd = &cobra.Command{
 	Use:   "web",
-	Short: "this is web view",
+	Short: "this is web view by websocket",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("执行web服务: web : %v", args)
-
-		app := httpd.New()
-		app.Get("/", web.IndexHandlerFunc)
-		app.Run()
+		web.Run()
 	},
 }

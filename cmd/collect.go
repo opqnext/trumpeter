@@ -24,6 +24,7 @@ var collectCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		fmt.Printf("执行采集的方法:collect host : %v", args)
+
 		db.InitRedis(host, port)
 		db.Pop()
 	},

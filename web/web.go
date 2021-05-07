@@ -10,17 +10,6 @@ import (
 	"net/url"
 )
 
-//func Run() {
-//	app := httpd.New()
-//	app.Get("/", IndexHandlerFunc)
-//	app.Run()
-//}
-//func IndexHandlerFunc(c *httpd.Context) {
-//	c.Write.Write([]byte("Hello ant-go"))
-//}
-
-// ==================
-
 const (
 	readBufferSize  = 1024
 	writeBufferSize = 1024
@@ -59,8 +48,8 @@ func (c *Client) writePump() {
 	}
 }
 
-func Push() {
-	var addr = "localhost:3010"
+func Push(val string) {
+	var addr = "localhost:1215"
 	//u := url.URL{Scheme: "ws", Host: addr}
 
 	u := url.URL{Scheme: "ws", Host: addr, Path: "/ws"}
@@ -75,16 +64,18 @@ func Push() {
 		return
 	}
 
-	werr := conn.WriteMessage(websocket.TextMessage, []byte("11111111111111"))
+	err = conn.WriteMessage(websocket.TextMessage, []byte(val))
 
-	fmt.Printf("发送失败: %v", werr)
+	if err != nil {
+		fmt.Printf("发送失败: %v", err)
+	}
 }
 
 func (c *Client) pushPump() {
 	for {
 		select {
 		case message := <-c.messages:
-			fmt.Printf("send message is :%s\n", message)
+			//fmt.Printf("send message is :%s\n", message)
 			c.conn.WriteMessage(1, message)
 		}
 	}
@@ -113,7 +104,7 @@ func manager() {
 	}
 }
 
-func Run() {
+func Run(webPort int) {
 
 	var homeTemplate = template.Must(template.ParseFiles("./web/index.html"))
 
@@ -139,7 +130,8 @@ func Run() {
 
 	go manager()
 
-	m.RunOnAddr("localhost:3010")
+	addr := fmt.Sprintf("localhost:%d", webPort)
+	m.RunOnAddr(addr)
 	//m.Run()
 
 }

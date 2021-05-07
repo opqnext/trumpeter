@@ -8,13 +8,12 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "trumpeter",
-	Short: "trumpeter is a young and talented bag catcher",
-	Long:  `trumpeter is a young and talented bag catcher`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
-
-		fmt.Printf("11=== %v \n", args)
-	},
+	Short: "trumpeter 是一款用于实时采集、展示网络请求的抓包小工具",
+	//Run: func(cmd *cobra.Command, args []string) {
+	//	// Do Stuff Here
+	//
+	//	fmt.Printf("11=== %v \n", args)
+	//},
 }
 
 func Execute() {

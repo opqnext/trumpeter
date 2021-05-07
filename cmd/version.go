@@ -11,8 +11,7 @@ func init() {
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of trumpeter",
-	Long:  `All software has versions. This is trumpeter's`,
+	Short: "显示 trumpeter 当前版本号",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("trumpeter Static Site Generator v0.9 -- HEAD")
 	},

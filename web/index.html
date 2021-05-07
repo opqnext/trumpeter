@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Chat Example</title>
+	<meta charset="UTF-8">
+	<title>trumpeter抓包工具</title>
+	<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
 	<script type="text/javascript">
         window.onload = function () {
             var conn;
@@ -16,17 +22,6 @@
                 }
             }
 
-            document.getElementById("form").onsubmit = function () {
-                if (!conn) {
-                    return false;
-                }
-                if (!msg.value) {
-                    return false;
-                }
-                conn.send(msg.value);
-                msg.value = "";
-                return false;
-            };
 
             if (window["WebSocket"]) {
                 conn = new WebSocket("ws://{{$}}/ws");
@@ -38,9 +33,11 @@
                 conn.onmessage = function (evt) {
                     var messages = evt.data.split('\n');
                     for (var i = 0; i < messages.length; i++) {
-                        var item = document.createElement("div");
-                        item.innerText = messages[i];
-                        appendLog(item);
+                        // var item = document.createElement("div");
+                        // item.innerText = messages[i];
+                        // appendLog(item);
+
+                        appendContent(messages[i]);
                     }
                 };
             } else {
@@ -49,50 +46,92 @@
                 appendLog(item);
             }
         };
+
+
+        $(function(){
+
+            $("#submit").click(function () {
+
+                var message = '{"server":{"USER":"www","HOME":"\/home\/www","HTTP_CONNECTION":"keep-alive","HTTP_ACCEPT_ENCODING":"gzip, deflate","HTTP_COOKIE":"_csrf=23530183cc9a0620747dedacd155deda7e860aac75d3527bd66b137184c70b87a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%222Fkx_LZY00mTM1aFbZg0A92KAc7uYfJE%22%3B%7D","HTTP_HOST":"api-schoolmate.opqnext.com","HTTP_ACCEPT":"*\/*","HTTP_USER_AGENT":"PostmanRuntime\/7.6.0","HTTP_POSTMAN_TOKEN":"823659e1-edf9-4e82-9d10-2592573e96af","HTTP_CACHE_CONTROL":"no-cache","REDIRECT_STATUS":"200","SERVER_NAME":"api-schoolmate.opqnext.com","SERVER_PORT":"443","SERVER_ADDR":"10.206.0.8","REMOTE_PORT":"65427","REMOTE_ADDR":"36.110.168.140","SERVER_SOFTWARE":"nginx\/1.19.0","GATEWAY_INTERFACE":"CGI\/1.1","HTTPS":"on","REQUEST_SCHEME":"https","SERVER_PROTOCOL":"HTTP\/1.1","DOCUMENT_ROOT":"\/data\/menglu_api\/web","DOCUMENT_URI":"\/index.php","REQUEST_URI":"\/v1\/debug\/test","SCRIPT_NAME":"\/index.php","CONTENT_LENGTH":"","CONTENT_TYPE":"","REQUEST_METHOD":"GET","QUERY_STRING":"","SCRIPT_FILENAME":"\/data\/menglu_api\/web\/index.php","FCGI_ROLE":"RESPONDER","PHP_SELF":"\/index.php","REQUEST_TIME_FLOAT":1620297189.882068,"REQUEST_TIME":1620297189},"request":[],"response":{"ec":401,"em":"参数错误","data":[]}}';
+
+                appendContent(message);
+            })
+        });
+
+
+        function timestampToTime(timestamp) {
+            //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            var date = new Date(timestamp * 1000);
+            Y = date.getFullYear() + '-';
+            M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+            D = date.getDate() + ' ';
+            h = date.getHours() + ':';
+            m = date.getMinutes() + ':';
+            s = date.getSeconds();
+            return Y+M+D+h+m+s;
+        }
+
+
+        function appendContent(message) {
+
+			console.log(message);
+
+			var row = JSON.parse(message);
+
+	        var html = '<tr><td>';
+			html += row['server']['SERVER_NAME'];
+			html += '</td><td>';
+            html += row['server']['REQUEST_URI'];
+            html += '</td><td>';
+            html += timestampToTime(row['server']['REQUEST_TIME']);
+            html += '</td><td>操作';
+            html += '</td></tr>';
+
+            $('#request-list').append(html);
+
+        }
 	</script>
 	<style type="text/css">
-		html {
-			overflow: hidden;
-		}
-
-		body {
-			overflow: hidden;
-			padding: 0;
-			margin: 0;
-			width: 100%;
-			height: 100%;
-			background: gray;
-		}
-
-		#log {
-			background: white;
-			margin: 0;
-			padding: 0.5em 0.5em 0.5em 0.5em;
-			position: absolute;
-			top: 0.5em;
-			left: 0.5em;
-			right: 0.5em;
-			bottom: 3em;
-			overflow: auto;
-		}
-
-		#form {
-			padding: 0 0.5em 0 0.5em;
-			margin: 0;
-			position: absolute;
-			bottom: 1em;
-			left: 0px;
-			width: 100%;
-			overflow: hidden;
-		}
 
 	</style>
 </head>
 <body>
+	<div class="container header">
+		<div class="row">
+			<div class="col-sm-12 col-md-12">
+				<!-- Image and text -->
+				<nav class="navbar navbar-light bg-light">
+					<a class="navbar-brand" href="#">
+						<img src="./logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+						trumpeter
+					</a>
+				</nav>
+			</div>
+			<div class="col-sm-12 col-md-12">
+				<p class="font-weight-bold">请求列表:</p>
+				<p class="font-weight-bold"></p>
+				<p class="font-weight-bold"><button id="submit" type="button" class="btn btn-info">点击</button></p>
+			</div>
+
+
+			<div  class="col-sm-8 col-md-8">
+
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th scope="col">域名</th>
+						<th scope="col">路径</th>
+						<th scope="col">时间</th>
+						<th scope="col">操作</th>
+					</tr>
+					</thead>
+					<tbody id="request-list">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
 <div id="log"></div>
-<form id="form">
-	<input type="submit" value="Send" />
-	<input type="text" id="msg" size="64"/>
-</form>
 </body>
 </html>

@@ -21,9 +21,9 @@ func InitRedis(host string, port int) {
 	fmt.Printf("redis: %v", rdb)
 }
 
-func Pop() {
+func Pop(key string) {
 	for {
-		val, err := rdb.BRPop(ctx, 0, "trumpeter:request:line").Result()
+		val, err := rdb.BRPop(ctx, 0, key).Result()
 		//fmt.Printf("打印: %s \n", val)
 		//
 		//fmt.Printf("打印2: %s \n", val[1])
@@ -32,11 +32,13 @@ func Pop() {
 			fmt.Println("key does not exist")
 		case err != nil:
 			fmt.Println("BRPop failed", err)
-		case val[0] == "":
+		case val[1] == "":
 			fmt.Println("value is empty")
 		}
 
-		web.Push()
+		fmt.Printf("我接收到: %v \n", val[1])
+
+		web.Push(val[1])
 
 		//Save(val[1])
 	}
